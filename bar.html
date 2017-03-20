@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+    background-color: #4CAF50;
+}
+</style>
+</head>
+<ul>
+<li><a href="index.html">Index</a></li>
+<li><a href="final.html">Brushing Visualizations</a></li>
+<li><a href="bar.html">Bar Charts</a></li>
+<li><a href="bivar.html">Bivariate Scatterplot</a></li>
+<li><a href="10cor.html">10x10 Correlation Matrix</a></li>
+<li><a href="5scat.html">5x5 Scatterplot matrix</a></li>
+<li><a href="10pcd.html">10 Axis Parrallel Coordinates Display </a></li>
+<li><a href="pca.html">PCA Plot</a></li>
+<li><a href="scree.html">PCA Plot-Scree</a></li>
+<li><a href="biplot.html">10 Axis Biplot</a></li>
+<li><a href="mdsd.html">MDS Display(Data)</a></li>
+<li><a href="mdsa.html">MDS Display(Attributes)</a></li>
+</ul>
+<h1>NYPD Vehicle Incident Data</h1>
+
+<h2>Lab 2: Bar Charts</h2>
+
+<div>Attribute to display:<br/>
+<select id="select-list">
+  <option value="borough.tsv">Borough</option> 
+  <option value="month.tsv">Months</option>
+  <option value="MotoristsInjured.tsv">Motorists Injured</option>
+  <option value="MotoristsKilled.tsv">Motorists Killed</option>
+  <option value="PedestriansInjured.tsv">Pedestrians Injured</option>
+  <option value="PersonsKilled.tsv">Persons Killed</option>
+  <option value="personsInjured.tsv">Persons Injured</option>
+  <option value="year.tsv">Years</option>
+</select>
+</div>
+
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: blueviolet;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: deepskyblue;
+}
+
+.bar:hover {
+  fill: darkslateblue ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+/*------------------------------------------------TOOL TIP TEMPLATE------------------------------------------*/
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 2px;
+}
+
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+<script>
+
+
+var margin = {top: 20, right: 20, bottom: 20, left: 40},
+    width = 1000 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+var setPercent = d3.format(".0%");
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(setPercent);
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Frequency:</strong> <span style='color:white'>" + d.frequency + "</span>";
+  })
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.call(tip);
+
+d3.tsv("borough.tsv", type, function(error, data) {
+  x.domain(data.map(function(d) { return d.range; }));
+  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Frequency");
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.range); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.frequency); })
+      .attr("height", function(d) { return height - y(d.frequency); })
+
+      .on("mouseover", function(d){
+          tip.show(d)
+          d3.select(this)
+		  
+          .attr("width",x.rangeBand()*1.1)
+      })
+      .on('mouseout', function(d){
+        tip.hide(d)
+        d3.select(this)
+          .attr("width",x.rangeBand())
+      })
+	  
+});
+
+function type(d) {
+  d.frequency = +d.frequency;
+  return d;
+}
+
+var tipFunction = function() {
+    svg.selectAll("*").remove();
+    var selectedValue = d3.event.target.value;
+    var selectedIndex = d3.event.target.selectedIndex;
+
+    var selectedDOMElement =
+        d3.event.target.children[selectedIndex];
+    var selection = d3.select(selectedDOMElement);
+    
+    d3.tsv(selectedValue, type, function(error, data) {
+    x.domain(data.map(function(d) { return d.range; }));
+    y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Frequency");
+
+    svg.selectAll(".bar")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.range); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y(d.frequency); })
+        .attr("height", function(d) { return height - y(d.frequency); })
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
+		.on("mouseover", function(d){
+          tip.show(d)
+          d3.select(this)
+		  
+          .attr("width",x.rangeBand()*1.1)
+      })
+      .on('mouseout', function(d){
+        tip.hide(d)
+        d3.select(this)
+          .attr("width",x.rangeBand())
+      })
+	  
+	  
+
+});
+
+}
+
+//d3 change listener for when we change dropdown menu
+d3.select("#select-list").on("change", tipFunction);
+
+
+</script>

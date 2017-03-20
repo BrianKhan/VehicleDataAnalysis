@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+    background-color: #4CAF50;
+}
+</style>
+</head>
+<ul>
+<li><a href="index.html">Index</a></li>
+<li><a href="final.html">Brushing Visualizations</a></li>
+<li><a href="bar.html">Bar Charts</a></li>
+<li><a href="bivar.html">Bivariate Scatterplot</a></li>
+<li><a href="10cor.html">10x10 Correlation Matrix</a></li>
+<li><a href="5scat.html">5x5 Scatterplot matrix</a></li>
+<li><a href="10pcd.html">10 Axis Parrallel Coordinates Display </a></li>
+<li><a href="pca.html">PCA Plot</a></li>
+<li><a href="scree.html">PCA Plot-Scree</a></li>
+<li><a href="biplot.html">10 Axis Biplot</a></li>
+<li><a href="mdsd.html">MDS Display(Data)</a></li>
+<li><a href="mdsa.html">MDS Display(Attributes)</a></li>
+</ul>
+<h1>NYPD Vehicle Incident Data</h1>
+
+<h2>Lab 3: MDS Display(Euclidian)</h2>
+
+<html>
+  <head>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <link rel='stylesheet' href='bivarstyle.css'>
+  </head>
+  <body>
+    unable to find 2D array, MDS returned 9D array: Here is my euclidian dissimilarity  matrix:
+	<img src="http://i.imgur.com/uMLB9fm.png" align ="bottom">
+	<br></br>
+	Here is what I got from my MDS function in python:
+	<br></br>
+	<img src="http://i.imgur.com/Rpi4SgV.png" align="bottom" >
+	<br></br>
+	Here is a python code snippet:
+	<br></br>
+	<img src ="http://i.imgur.com/H0aPioY.png" align="bottom">
+  </body>
+</html>

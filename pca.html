@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+    background-color: #4CAF50;
+}
+</style>
+</head>
+<ul>
+<li><a href="index.html">Index</a></li>
+<li><a href="final.html">Brushing Visualizations</a></li>
+<li><a href="bar.html">Bar Charts</a></li>
+<li><a href="bivar.html">Bivariate Scatterplot</a></li>
+<li><a href="10cor.html">10x10 Correlation Matrix</a></li>
+<li><a href="5scat.html">5x5 Scatterplot matrix</a></li>
+<li><a href="10pcd.html">10 Axis Parrallel Coordinates Display </a></li>
+<li><a href="pca.html">PCA Plot</a></li>
+<li><a href="scree.html">PCA Plot-Scree</a></li>
+<li><a href="biplot.html">10 Axis Biplot</a></li>
+<li><a href="mdsd.html">MDS Display(Data)</a></li>
+<li><a href="mdsa.html">MDS Display(Attributes)</a></li>
+</ul>
+<h1>NYPD Vehicle Incident Data</h1>
+
+<h2>Lab 3: PCA and Scree Plot</h2>
+
+<style>
+
+
+
+
+
+.axis--x path {
+  display: none;
+  
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: blueviolet;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: deepskyblue;
+}
+
+.bar:hover {
+  fill: darkslateblue ;
+}
+
+.x.axis path {
+  display: none;
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<style>
+
+}
+
+</style>
+<svg id="visualisation" width="1000" height="500"></svg>
+<text text-anchor="middle"
+          x="60" y="75">Eigenvector</text>
+<script>
+InitChart();
+
+function InitChart() {
+
+  var barData = [{
+    'x': 1,
+    'y': 2.275
+
+  }, {
+    'x': 2,
+    'y': 1.625
+
+  }, {
+    'x': 3,
+    'y': 1.574
+
+  }, {
+    'x': 4,
+    'y': 1.265
+
+  }, {
+    'x': 5,
+    'y': 1.033
+
+  }, {
+    'x': 6,
+    'y': 0.989
+
+  }, {
+    'x': 7,
+    'y': 0.947
+
+
+  }, {
+    'x': 8,
+    'y': 0.183
+
+
+  }, {
+    'x': 9,
+    'y': 0.109
+  }];
+
+  var vis = d3.select('#visualisation'),
+    WIDTH = 1000,
+    HEIGHT = 500,
+    MARGINS = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 50
+    },
+    xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, WIDTH - MARGINS.right], 0.1).domain(barData.map(function (d) {
+      return d.x;
+    })),
+
+
+    yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0,
+      d3.max(barData, function (d) {
+        return d.y;
+      })
+    ]),
+
+    xAxis = d3.svg.axis()
+      .scale(xRange)
+      .tickSize(5)
+      .tickSubdivide(true),
+
+    yAxis = d3.svg.axis()
+      .scale(yRange)
+      .tickSize(5)
+      .orient("left")
+      .tickSubdivide(true);
+
+vis.append('svg:g')
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Eigenvalue");
+	  
+	  
+	  
+  vis.append('svg:g')
+    .attr('class', 'x axis')
+    .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
+    .call(xAxis);
+	
+	
+
+  vis.append('svg:g')
+    .attr('class', 'y axis')
+    .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+    .call(yAxis);
+
+  vis.selectAll('rect')
+    .data(barData)
+    .enter()
+    .append('rect')
+    .attr('x', function (d) {
+      return xRange(d.x);
+    })
+    .attr('y', function (d) {
+      return yRange(d.y);
+    })
+    .attr('width', xRange.rangeBand())
+    .attr('height', function (d) {
+      return ((HEIGHT - MARGINS.bottom) - yRange(d.y));
+    })
+    .attr('fill', 'grey')
+    .on('mouseover',function(d){
+      d3.select(this)
+        .attr('fill','blue');
+    })
+    .on('mouseout',function(d){
+      d3.select(this)
+        .attr('fill','grey');
+    });
+
+}
+</script>
+
